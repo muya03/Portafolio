@@ -113,9 +113,9 @@ Subir **el contenido de** `dist/public/` (no la carpeta en sí) a la raíz web d
 
 ## Problemas frecuentes y soluciones
 
-### El proyecto está configurado para Linux (Replit)
+### El proyecto está configurado para Linux
 
-El repositorio fue desarrollado en Replit (Linux), y el archivo `pnpm-workspace.yaml` **excluye deliberadamente los binarios nativos de otras plataformas** mediante un bloque `overrides` con valores `"-"`. Esto provoca que, al compilar en macOS (Apple Silicon) o Windows, falten los binarios nativos y la compilación falle.
+El repositorio fue desarrollado en Linux, y el archivo `pnpm-workspace.yaml` **excluye deliberadamente los binarios nativos de otras plataformas** mediante un bloque `overrides` con valores `"-"`. Esto provoca que, al compilar en macOS (Apple Silicon) o Windows, falten los binarios nativos y la compilación falle.
 
 **Síntoma:** errores del tipo `Cannot find module @rollup/rollup-darwin-arm64`, `You installed esbuild for another platform`, o `Cannot find module '../lightningcss.darwin-arm64.node'`.
 
