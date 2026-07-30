@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { animate } from 'animejs';
 import { Menu, X } from 'lucide-react';
 import { useLanguage, type Lang } from '@/lib/i18n';
@@ -51,12 +52,46 @@ export function Navbar() {
     }
   }, [activeSection, lang]);
 
+  // Close the mobile menu once the desktop breakpoint takes over, so the
+  // scroll lock below can never survive a resize/rotation.
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => {
+      if (mql.matches) setIsMobileOpen(false);
+    };
+    mql.addEventListener('change', onChange);
+    onChange();
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+
+  // Close on Escape while the mobile menu is open
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isMobileOpen]);
+
+  // Lock the page behind the open menu. Layout effect so the lock is released
+  // before the smooth scroll queued by handleLinkClick runs.
+  useLayoutEffect(() => {
+    if (!isMobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileOpen]);
+
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsMobileOpen(false);
     const target = document.querySelector(href);
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      // Wait for the scroll lock to be lifted, otherwise the page can't scroll.
+      requestAnimationFrame(() => target.scrollIntoView({ behavior: 'smooth' }));
     }
   };
 
@@ -105,29 +140,45 @@ export function Navbar() {
             className="text-foreground"
             onClick={() => setIsMobileOpen(!isMobileOpen)}
             aria-label="Toggle menu"
+            aria-expanded={isMobileOpen}
+            aria-controls="mobile-menu"
           >
             {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-
-        {/* Mobile Menu */}
-        <div className={`fixed inset-0 glass-panel flex flex-col items-center justify-center transition-transform duration-500 lg:hidden ${
-          isMobileOpen ? 'translate-y-0' : '-translate-y-full'
-        }`}>
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => handleLinkClick(e, link.href)}
-              className={`text-2xl font-display font-medium py-4 ${
-                activeSection === link.href.substring(1) ? 'text-primary' : 'text-foreground'
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
       </div>
+
+      {/*
+        Mobile Menu — rendered in a portal on purpose. While scrolled, the
+        header carries `glass-panel`, whose `backdrop-filter` turns it into the
+        containing block for fixed-position descendants: nested here, the
+        overlay would shrink to the header bar instead of covering the viewport.
+      */}
+      {createPortal(
+        <div
+          id="mobile-menu"
+          aria-hidden={!isMobileOpen}
+          className={`fixed inset-0 z-40 glass-panel overflow-y-auto overscroll-contain transition-[transform,visibility] duration-500 lg:hidden ${
+            isMobileOpen ? 'translate-y-0 visible' : '-translate-y-full invisible'
+          }`}
+        >
+          <nav className="flex min-h-full flex-col items-center justify-center px-6 py-24">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleLinkClick(e, link.href)}
+                className={`text-2xl font-display font-medium py-4 ${
+                  activeSection === link.href.substring(1) ? 'text-primary' : 'text-foreground'
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </div>,
+        document.body,
+      )}
     </header>
   );
 }
