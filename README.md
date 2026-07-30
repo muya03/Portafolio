@@ -24,9 +24,19 @@ El resultado de la compilación es un sitio **completamente estático** (HTML, C
 
 ## Requisitos previos
 
-- **Node.js 20 o superior**.
-- **pnpm** instalado (`npm install -g pnpm` o `corepack enable`).
+- **Node.js 20.19+ o 22.12+** (Vite 7 no admite versiones anteriores). El repositorio incluye un `.nvmrc`, así que con [nvm](https://github.com/nvm-sh/nvm) basta con ejecutar `nvm use` en la raíz del proyecto.
+- **pnpm 10 o superior**. La forma recomendada es `corepack enable`, que instala automáticamente la versión fijada en el campo `packageManager` del `package.json`.
 - Git (opcional, para clonar el repositorio).
+
+### Plataformas admitidas
+
+El proyecto se instala y compila sin cambios en:
+
+- **macOS con Apple Silicon** (M1, M2, M3, M4 — `darwin-arm64`)
+- **macOS con Intel** (`darwin-x64`)
+- **Linux x64**
+
+En un Mac con Apple Silicon, si Node.js se ha instalado con nvm o con el paquete oficial, ya se obtiene la versión nativa `arm64`. Se puede comprobar con `node -p "process.arch"`, que debe responder `arm64`. No hace falta Rosetta.
 
 ---
 
@@ -49,19 +59,28 @@ pnpm install
 
 ### 3. Compilar el frontend
 
-El archivo `vite.config.ts` exige **dos variables de entorno obligatorias**: `PORT` y `BASE_PATH`. Sin ellas, la compilación falla.
-
-- `PORT`: cualquier número (solo se usa en desarrollo; irrelevante para el sitio final).
-- `BASE_PATH`: **debe coincidir con la ruta donde se servirá el sitio**.
-  - Raíz del dominio (ej. `tudominio.com`) → `BASE_PATH=/`
-  - Subcarpeta (ej. `tudominio.com/portfolio/`) → `BASE_PATH=/portfolio/`
+Desde la raíz del proyecto:
 
 ```bash
-cd artifacts/portfolio
-PORT=5000 BASE_PATH=/ npx vite build --config vite.config.ts
+pnpm run build:portfolio
 ```
 
-> Se recomienda `npx vite build` en lugar de `pnpm run build`, porque el script `build` del repositorio relanza `pnpm install` internamente y puede fallar.
+No hace falta definir ninguna variable de entorno: el sitio se compila para servirse en la **raíz del dominio** (`BASE_PATH=/`).
+
+Si el sitio va a publicarse en una **subcarpeta**, hay que indicarlo con `BASE_PATH`, que debe coincidir con la ruta donde se servirá:
+
+```bash
+# Para tudominio.com/portfolio/
+BASE_PATH=/portfolio/ pnpm run build:portfolio
+```
+
+Variables de entorno reconocidas (todas opcionales):
+
+| Variable | Valor por defecto | Para qué sirve |
+| --- | --- | --- |
+| `BASE_PATH` | `/` | Ruta pública donde se servirá el sitio. |
+| `PORT` | `5173` | Puerto del servidor de desarrollo y de la vista previa. |
+| `HOST` | `0.0.0.0` | Interfaz de escucha. Usar `localhost` para evitar el aviso del cortafuegos de macOS. |
 
 ### 4. Resultado
 
@@ -80,11 +99,21 @@ robots.txt
 
 ### 5. Probar en local antes de subir
 
+Para servir la compilación tal cual se subirá al hosting:
+
 ```bash
-PORT=4173 BASE_PATH=/ npx vite preview --config vite.config.ts
+pnpm run serve
 ```
 
-Abrir `http://localhost:4173`. (Abrir el `index.html` con doble clic mediante `file://` **no funciona**; debe servirse por un servidor web.)
+Abrir la URL que muestra la consola (por defecto `http://localhost:5173`). Abrir el `index.html` con doble clic mediante `file://` **no funciona**; debe servirse por un servidor web.
+
+Para trabajar en el código con recarga en caliente, en lugar de lo anterior:
+
+```bash
+pnpm run dev
+```
+
+En macOS, al arrancar el servidor aparece un aviso del cortafuegos porque por defecto escucha en todas las interfaces. Para evitarlo, arrancar con `HOST=localhost pnpm run dev`.
 
 ### 6. Subir al hosting
 
@@ -103,27 +132,26 @@ Subir **el contenido de** `dist/public/` (no la carpeta en sí) a la raíz web d
 </IfModule>
 ```
 
-**Netlify:** arrastrar la carpeta `dist/public`, o conectar el repositorio con build command `cd artifacts/portfolio && PORT=5000 BASE_PATH=/ npx vite build --config vite.config.ts` y publish directory `artifacts/portfolio/dist/public`. Añadir un archivo `_redirects` con `/*  /index.html  200`.
+**Netlify:** arrastrar la carpeta `dist/public`, o conectar el repositorio con build command `pnpm run build:portfolio` y publish directory `artifacts/portfolio/dist/public`. Añadir un archivo `_redirects` con `/*  /index.html  200`.
 
-**Vercel:** importar el repositorio, output directory `artifacts/portfolio/dist/public`, y definir las variables de entorno `PORT` y `BASE_PATH`.
+**Vercel:** importar el repositorio, build command `pnpm run build:portfolio` y output directory `artifacts/portfolio/dist/public`. No hace falta definir variables de entorno.
 
-**GitHub Pages (en subcarpeta):** compilar con `BASE_PATH=/Portafolio/` y copiar `index.html` como `404.html` dentro de la carpeta publicada para el fallback de la SPA.
+**GitHub Pages (en subcarpeta):** compilar con `BASE_PATH=/Portafolio/ pnpm run build:portfolio` y copiar `index.html` como `404.html` dentro de la carpeta publicada para el fallback de la SPA.
 
 ---
 
 ## Problemas frecuentes y soluciones
 
-### El proyecto está configurado para Linux
-
-El repositorio fue desarrollado en Linux, y el archivo `pnpm-workspace.yaml` **excluye deliberadamente los binarios nativos de otras plataformas** mediante un bloque `overrides` con valores `"-"`. Esto provoca que, al compilar en macOS (Apple Silicon) o Windows, falten los binarios nativos y la compilación falle.
+### Faltan binarios nativos en macOS
 
 **Síntoma:** errores del tipo `Cannot find module @rollup/rollup-darwin-arm64`, `You installed esbuild for another platform`, o `Cannot find module '../lightningcss.darwin-arm64.node'`.
 
-**Solución:** en `pnpm-workspace.yaml`, dentro del bloque `overrides`, eliminar las líneas que excluyen el binario de tu plataforma (las que terminan en `darwin-arm64: "-"` en el caso de Mac con Apple Silicon), para esbuild, rollup, lightningcss y @tailwindcss/oxide. Después borrar `node_modules` y `pnpm-lock.yaml` y reinstalar:
+Estos errores **ya no deberían aparecer**: el archivo `pnpm-workspace.yaml` incluye los binarios de macOS (`darwin-arm64` y `darwin-x64`) para esbuild, rollup, lightningcss y `@tailwindcss/oxide`, y el `pnpm-lock.yaml` los tiene resueltos.
+
+Si aún así aparecen, casi siempre se debe a un `node_modules` heredado de una instalación anterior. Reinstalar en limpio (sin borrar el `pnpm-lock.yaml`):
 
 ```bash
 rm -rf node_modules artifacts/*/node_modules lib/*/node_modules
-rm -f pnpm-lock.yaml
 pnpm install
 ```
 
@@ -132,6 +160,14 @@ Verificar que los binarios nativos correctos están presentes:
 ```bash
 ls node_modules/.pnpm | grep darwin
 ```
+
+Si el resultado está vacío en un Mac, comprobar que Node.js es realmente nativo y no una compilación x64 ejecutándose bajo Rosetta:
+
+```bash
+node -p "process.arch"   # debe responder "arm64" en Apple Silicon
+```
+
+> **Nota:** los `overrides` de `pnpm-workspace.yaml` siguen excluyendo los binarios de Windows, Android, FreeBSD, etc. para que la instalación no descargue paquetes innecesarios. **No hay que volver a añadir las líneas `darwin-*`**: eliminarlas es precisamente lo que permite que el proyecto funcione en Mac.
 
 ### Los scripts de compilación nativos no se ejecutan
 
@@ -153,15 +189,28 @@ Ocurre al añadir manualmente un `onlyBuiltDependencies` cuando ya existe uno en
 
 **Síntoma:** `PORT environment variable is required` o `BASE_PATH environment variable is required`.
 
-**Solución:** definir ambas variables al ejecutar el build (ver paso 3).
+Ya no ocurre: ambas variables son opcionales y tienen valores por defecto (`PORT=5173`, `BASE_PATH=/`). Si el error persiste, es que se está ejecutando una copia antigua del repositorio.
 
-### El puerto está ocupado al previsualizar
+### El puerto está ocupado
 
-**Síntoma:** `Port 5000 is already in use`.
+**Síntoma:** `Port 5173 is already in use`.
 
-En macOS, el puerto 5000 lo suele usar el Receptor AirPlay.
+En desarrollo, Vite pasa automáticamente al siguiente puerto libre y muestra la URL definitiva en la consola.
 
-**Solución:** usar otro puerto, por ejemplo `PORT=4173`. El puerto solo afecta a la vista previa local, no al sitio final.
+**Solución (si se quiere fijar uno concreto):** `PORT=4173 pnpm run dev`.
+
+> En macOS conviene **no** usar el puerto **5000**: lo ocupa el Receptor AirPlay del sistema. Por eso el valor por defecto es 5173.
+
+### La versión de Node.js es demasiado antigua
+
+**Síntoma:** al instalar, un aviso de `Unsupported engine`, o errores de sintaxis al arrancar Vite.
+
+**Solución:** usar Node.js 20.19+ o 22.12+. Con nvm, desde la raíz del proyecto:
+
+```bash
+nvm install   # lee el .nvmrc del repositorio
+nvm use
+```
 
 ### Página en blanco tras subir al hosting
 
