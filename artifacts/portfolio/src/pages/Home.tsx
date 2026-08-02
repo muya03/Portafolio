@@ -427,6 +427,20 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
+
+              <div className="pt-4 space-y-3">
+                <a
+                  href={`${import.meta.env.BASE_URL}informe-gestion-consell-estudiantat-2024-2026.pdf`}
+                  download
+                  className="btn-ripple inline-flex items-center gap-2 px-6 py-3 border border-primary/50 text-primary font-bold rounded-sm hover:bg-primary/10 transition-colors"
+                >
+                  <Download className="w-5 h-5" />
+                  {t.representation.reportLabel}
+                </a>
+                <p className="text-sm text-muted-foreground font-light">
+                  {t.representation.reportNote}
+                </p>
+              </div>
             </div>
           </div>
         </div>

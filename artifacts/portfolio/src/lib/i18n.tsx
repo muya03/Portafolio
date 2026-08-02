@@ -43,6 +43,8 @@ export type Dict = {
     roles: string[];
     stageAlt: string;
     podiumAlt: string;
+    reportLabel: string;
+    reportNote: string;
   };
   education: { title: string; items: Education[] };
   achievements: { title: string; items: Achievement[] };
@@ -78,13 +80,14 @@ const SHARED = {
     { outlet: "Actualidad Castellón", url: "https://actualidadcastellon.com/las-200-plazas-de-la-nueva-residencia-de-estudiantes-de-castellon-preve-abrir-en-2025/" },
     { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/educacion2/la-uji-incluye-en-su-plan-de-gobierno-un-nuevo-edificio-de-alojamientos-asequibles-para-el-estudiantado" },
     { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/educacion2/el-precio-del-alquiler-amenaza-el-acceso-a-la-universidad-en-castello-piden-entre250-y-280-por-habitacion" },
-    { outlet: "El Periódic", url: "https://www.elperiodic.com/castellon/castellon-ultima-bases-ayudas-alquiler-joven_905423" },
+    { outlet: "El Periódic", url: "https://www.elperiodic.com/castellon/castellon-ultima-bases-pondran-marcha-ayudas-alquiler-joven-estaran-listas-proximos-meses_1070197" },
     { outlet: "COPE", url: "https://www.cope.es/emisoras/comunidad-valenciana/castellon-provincia/castellon/noticias/perpetua-realidad-estudiante-universitario-vivienda-tipicos-prejuicios-20250206_3090914.html" },
     { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/castellon9/la-uji-presenta-su-plan-de-becas-para-2026-centraliza-todas-las-convocatorias-en-un-nuevo-portal-web" },
     { outlet: "El Periódico Mediterráneo", url: "https://www.elperiodicomediterraneo.com/castello-provincia/2026/05/07/candidato-rector-jesus-lancis-reune-129950959.html" },
     { outlet: "Vive Castellón", url: "https://www.vivecastellon.com/noticiario/informacion-de-los-asuntos-tratados-en-el-claustro-sesion-numero-11-48807.html" },
     { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/educacion2/el-estudiantado-de-medicina-de-la-uji-rechaza-el-convenio-de-practicas-con-la-conselleria-de-sanidad" },
     { outlet: "COPE", url: "https://www.cope.es/emisoras/comunidad-valenciana/castellon-provincia/castellon/ceracope/noticias/diferente-grosor-reduccion-co2-las-soluciones-desde-uji-los-retos-porcelanosa-20231004_2930380" },
+    { outlet: "La Plana al Día", url: "https://laplanaaldia.com/castello/noticias/265904/la-uji-blindara-la-representacion-estudiantil-en-un-26-5-en-todos-los-organos-colegiados-gracias-a-una-reforma-estatutaria-impulsada-por-el-consell-de-l-estudiantat" },
   ],
   projectsMeta: [
     { name: "Canvi_Page", tech: "TypeScript", link: "https://github.com/muya03/Canvi_Page" },
@@ -107,6 +110,9 @@ const SHARED = {
       link: "https://nexoraceramica.es",
       image: "photos/nexora-preview.jpg",
     },
+    { name: "embes", tech: "React / Vite", link: "https://embes.es/es" },
+    { name: "JSPV", tech: "React / Vite", link: "https://jspv.mohamedalhowaidi.es" },
+    { name: "La Llorería", tech: "React / Vite", link: "https://lloreria.mohamedalhowaidi.es" },
   ],
 };
 
@@ -133,6 +139,7 @@ const ES_MEDIA_TITLES = [
   "Asuntos tratados en el Claustro de la UJI, sesión nº 11",
   "El estudiantado de Medicina de la UJI rechaza el convenio de prácticas con la Conselleria de Sanidad",
   "Diferente grosor y reducción de CO2: las soluciones desde la UJI a los retos de Porcelanosa",
+  "La UJI blindará la representación estudiantil en un 26,5% en todos los órganos colegiados",
 ];
 
 const EN_MEDIA_TITLES = [
@@ -151,6 +158,7 @@ const EN_MEDIA_TITLES = [
   "Matters discussed at the UJI Senate, session no. 11",
   "UJI Medicine students reject the placement agreement with the regional health department",
   "Reduced thickness and lower CO2: UJI's solutions to Porcelanosa's challenges",
+  "UJI locks in 26.5% student representation across all collegiate bodies",
 ];
 
 const VA_MEDIA_TITLES = [
@@ -169,6 +177,7 @@ const VA_MEDIA_TITLES = [
   "Assumptes tractats en el Claustre de la UJI, sessió núm. 11",
   "L'estudiantat de Medicina de la UJI rebutja el conveni de pràctiques amb la Conselleria de Sanitat",
   "Diferent gruix i reducció de CO2: les solucions des de la UJI als reptes de Porcelanosa",
+  "La UJI blindarà la representació estudiantil en un 26,5% en tots els òrgans col·legiats",
 ];
 
 const AR_MEDIA_TITLES = [
@@ -187,6 +196,7 @@ const AR_MEDIA_TITLES = [
   "المواضيع التي نوقشت في مجلس جامعة UJI، الجلسة رقم 11",
   "طلاب الطب في جامعة UJI يرفضون اتفاقية التدريب مع وزارة الصحة الإقليمية",
   "سماكة أقل وانبعاثات CO2 أدنى: حلول جامعة UJI لتحديات بورسيلانوزا",
+  "جامعة UJI تضمن تمثيلاً طلابياً بنسبة 26.5% في جميع الهيئات الجماعية",
 ];
 
 export const translations: Record<Lang, Dict> = {
@@ -345,6 +355,21 @@ export const translations: Record<Lang, Dict> = {
             "Sitio web corporativo multilingüe (ES/EN/AR) diseñado y desarrollado para Nexora Cerámica. Trabajo real entregado a la empresa: catálogo de azulejos, grifería, bañeras y lavabos.",
         },
         {
+          ...SHARED.projectsMeta[7],
+          description:
+            "Web corporativa de embes, estudio de Castellón dedicado a software, automatización e infraestructura. Sitio bilingüe (ES/EN) con áreas de trabajo, equipo y contacto.",
+        },
+        {
+          ...SHARED.projectsMeta[8],
+          description:
+            "Web institucional de Joves Socialistes del País Valencià: sala de prensa, campañas, agenda pública y portal de transparencia, en valenciano y castellano.",
+        },
+        {
+          ...SHARED.projectsMeta[9],
+          description:
+            "Diario emocional íntimo para ti y tu grupo de confianza: registra cómo te sientes, visualiza tus tendencias y pide apoyo cuando la intensidad es alta.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "Web del ecosistema digital de CANVI en la Universitat Jaume I.",
         },
@@ -388,6 +413,9 @@ export const translations: Record<Lang, Dict> = {
       ],
       stageAlt: "Mohamed hablando en un evento",
       podiumAlt: "Mohamed en el podio",
+      reportLabel: "Descargar informe de gestión",
+      reportNote:
+        "Informe de gestión del Consell de l'Estudiantat de la UJI (2024-2026), correspondiente a mi legislatura como presidente.",
     },
     education: {
       title: "06. Formación",
@@ -583,6 +611,21 @@ export const translations: Record<Lang, Dict> = {
             "Multilingual corporate website (ES/EN/AR) designed and developed for Nexora Cerámica. A real project delivered to the company: catalogue of tiles, faucets, bathtubs and sinks.",
         },
         {
+          ...SHARED.projectsMeta[7],
+          description:
+            "Corporate website for embes, a Castellón studio working on software, automation and infrastructure. Bilingual site (ES/EN) covering practice areas, team and contact.",
+        },
+        {
+          ...SHARED.projectsMeta[8],
+          description:
+            "Institutional website for Joves Socialistes del País Valencià: press room, campaigns, public agenda and transparency portal, in Valencian and Spanish.",
+        },
+        {
+          ...SHARED.projectsMeta[9],
+          description:
+            "A private emotional journal for you and your circle: log how you feel, visualise your patterns and ask for support when intensity runs high.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "Digital ecosystem website for CANVI at Universitat Jaume I.",
         },
@@ -625,6 +668,9 @@ export const translations: Record<Lang, Dict> = {
       ],
       stageAlt: "Mohamed speaking at an event",
       podiumAlt: "Mohamed on the podium",
+      reportLabel: "Download management report",
+      reportNote:
+        "Management report of the UJI Student Council (2024-2026), covering my term as president.",
     },
     education: {
       title: "06. Education",
@@ -820,6 +866,21 @@ export const translations: Record<Lang, Dict> = {
             "Lloc web corporatiu multilingüe (ES/EN/AR) dissenyat i desenvolupat per a Nexora Cerámica. Treball real entregat a l'empresa: catàleg de rajoles, aixeteria, banyeres i lavabos.",
         },
         {
+          ...SHARED.projectsMeta[7],
+          description:
+            "Web corporativa d'embes, estudi de Castelló dedicat a programari, automatització i infraestructura. Lloc bilingüe (ES/EN) amb àrees de treball, equip i contacte.",
+        },
+        {
+          ...SHARED.projectsMeta[8],
+          description:
+            "Web institucional de Joves Socialistes del País Valencià: sala de premsa, campanyes, agenda pública i portal de transparència, en valencià i castellà.",
+        },
+        {
+          ...SHARED.projectsMeta[9],
+          description:
+            "Diari emocional íntim per a tu i el teu grup de confiança: registra com et sents, visualitza les teues tendències i demana suport quan la intensitat és alta.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "Web de l'ecosistema digital de CANVI en la Universitat Jaume I.",
         },
@@ -863,6 +924,9 @@ export const translations: Record<Lang, Dict> = {
       ],
       stageAlt: "Mohamed parlant en un esdeveniment",
       podiumAlt: "Mohamed al podi",
+      reportLabel: "Descarregar informe de gestió",
+      reportNote:
+        "Informe de gestió del Consell de l'Estudiantat de la UJI (2024-2026), corresponent a la meua legislatura com a president.",
     },
     education: {
       title: "06. Formació",
@@ -1058,6 +1122,21 @@ export const translations: Record<Lang, Dict> = {
             "موقع شركة متعدد اللغات (ES/EN/AR) صُمم وطُوّر لصالح Nexora Cerámica. عمل حقيقي سُلّم للشركة: كتالوج بلاط وحنفيات وأحواض استحمام ومغاسل.",
         },
         {
+          ...SHARED.projectsMeta[7],
+          description:
+            "الموقع المؤسسي لشركة embes، وهي شركة من كاستيون متخصصة في البرمجيات والأتمتة والبنية التحتية. موقع ثنائي اللغة (ES/EN) يعرض مجالات العمل وفريق الشركة ووسائل التواصل.",
+        },
+        {
+          ...SHARED.projectsMeta[8],
+          description:
+            "الموقع المؤسسي لمنظمة الشباب الاشتراكي لبلنسية (JSPV): غرفة الأخبار والحملات والأجندة العامة وبوابة الشفافية، باللغتين الفالنسية والإسبانية.",
+        },
+        {
+          ...SHARED.projectsMeta[9],
+          description:
+            "مفكرة عاطفية خاصة لك ولدائرتك المقرّبة: سجّل ما تشعر به، وتابع أنماط مشاعرك، واطلب الدعم عند اشتداد الحالة.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "موقع المنظومة الرقمية لـ CANVI في جامعة Jaume I.",
         },
@@ -1101,6 +1180,9 @@ export const translations: Record<Lang, Dict> = {
       ],
       stageAlt: "محمد يتحدث في فعالية",
       podiumAlt: "محمد على المنصة",
+      reportLabel: "تحميل تقرير الإدارة",
+      reportNote:
+        "تقرير إدارة مجلس طلاب جامعة جاومي الأول (2024-2026)، عن فترة رئاستي للمجلس.",
     },
     education: {
       title: "06. التعليم",
