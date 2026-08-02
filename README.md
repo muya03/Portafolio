@@ -136,7 +136,29 @@ Subir **el contenido de** `dist/public/` (no la carpeta en sí) a la raíz web d
 
 **Vercel:** importar el repositorio, build command `pnpm run build:portfolio` y output directory `artifacts/portfolio/dist/public`. No hace falta definir variables de entorno.
 
+**Cloudflare Pages:** conectar el repositorio con build command `pnpm run build:portfolio` y build output directory `artifacts/portfolio/dist/public`. El fallback de la SPA es automático si se añade un archivo `_redirects` con `/*  /index.html  200`.
+
 **GitHub Pages (en subcarpeta):** compilar con `BASE_PATH=/Portafolio/ pnpm run build:portfolio` y copiar `index.html` como `404.html` dentro de la carpeta publicada para el fallback de la SPA.
+
+**Servidor propio con Nginx:** servir `dist/public` como raíz, con el fallback de la SPA y caché larga para los assets (llevan hash en el nombre, así que no hace falta invalidarlos):
+
+```nginx
+server {
+    listen 80;
+    server_name tudominio.com;
+    root /var/www/portafolio;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}
+```
 
 ---
 
