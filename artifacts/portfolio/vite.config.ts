@@ -4,20 +4,28 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-// PORT y BASE_PATH los inyecta la plataforma de despliegue. En local no suelen
-// estar definidos, así que caemos a valores por defecto para que `pnpm dev`
-// funcione recién clonado; el entorno siempre tiene prioridad.
+// PORT / BASE_PATH are injected by Replit. Outside Replit (macOS, Windows, a
+// plain Linux checkout) they are not set, so we fall back to sane defaults and
+// only validate the value when one is actually provided.
+//
+// 5173 is Vite's own default: on macOS port 5000 is taken by the AirPlay
+// Receiver, so it must not be used as the fallback here.
 const DEFAULT_PORT = 5173;
-const DEFAULT_BASE_PATH = "/";
 
-const rawPort = process.env.PORT ?? String(DEFAULT_PORT);
-const port = Number(rawPort);
+const rawPort = process.env.PORT;
+const port = rawPort ? Number(rawPort) : DEFAULT_PORT;
 
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-const basePath = process.env.BASE_PATH || DEFAULT_BASE_PATH;
+// "/" serves the site from the domain root. Override with BASE_PATH when
+// deploying to a subfolder (e.g. BASE_PATH=/portfolio/).
+const basePath = process.env.BASE_PATH || "/";
+
+// Replit needs the dev server bound to 0.0.0.0 to be reachable. Locally you can
+// set HOST=localhost to avoid the macOS firewall prompt and stay off the LAN.
+const host = process.env.HOST || "0.0.0.0";
 
 export default defineConfig({
   base: basePath,
@@ -53,8 +61,10 @@ export default defineConfig({
   },
   server: {
     port,
-    strictPort: true,
-    host: "0.0.0.0",
+    // Replit must keep the assigned port; locally we let Vite pick the next
+    // free one instead of failing outright when the port is busy.
+    strictPort: process.env.PORT !== undefined,
+    host,
     allowedHosts: true,
     fs: {
       strict: true,
@@ -62,7 +72,7 @@ export default defineConfig({
   },
   preview: {
     port,
-    host: "0.0.0.0",
+    host,
     allowedHosts: true,
   },
 });
