@@ -52,9 +52,20 @@ export type Dict = {
   contact: {
     title: string;
     intro: string;
-    phoneLabel: string;
     rights: string;
     location: string;
+    form: {
+      nameLabel: string;
+      namePlaceholder: string;
+      emailLabel: string;
+      emailPlaceholder: string;
+      messageLabel: string;
+      messagePlaceholder: string;
+      send: string;
+      sending: string;
+      success: string;
+      error: string;
+    };
   };
   scroll: string;
 };
@@ -77,14 +88,10 @@ const SHARED = {
     { outlet: "El Periódico Mediterráneo", url: "https://www.elperiodicomediterraneo.com/opinion/2024/10/20/nuevo-rumbo-consell-l-estudiantat-109791767.html" },
     { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/castellon9/castello-modifica-las-lineas-de-autobuses-con-la-uji-para-adaptarse-a-los-horarios-de-las-clases" },
     { outlet: "Castellón Diario", url: "https://castellondiario.com/horario-especial-24-horas-en-la-biblioteca-de-la-uji-por-examenes/" },
-    { outlet: "Actualidad Castellón", url: "https://actualidadcastellon.com/las-200-plazas-de-la-nueva-residencia-de-estudiantes-de-castellon-preve-abrir-en-2025/" },
-    { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/educacion2/la-uji-incluye-en-su-plan-de-gobierno-un-nuevo-edificio-de-alojamientos-asequibles-para-el-estudiantado" },
-    { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/educacion2/el-precio-del-alquiler-amenaza-el-acceso-a-la-universidad-en-castello-piden-entre250-y-280-por-habitacion" },
     { outlet: "El Periódic", url: "https://www.elperiodic.com/castellon/castellon-ultima-bases-pondran-marcha-ayudas-alquiler-joven-estaran-listas-proximos-meses_1070197" },
     { outlet: "COPE", url: "https://www.cope.es/emisoras/comunidad-valenciana/castellon-provincia/castellon/noticias/perpetua-realidad-estudiante-universitario-vivienda-tipicos-prejuicios-20250206_3090914.html" },
     { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/castellon9/la-uji-presenta-su-plan-de-becas-para-2026-centraliza-todas-las-convocatorias-en-un-nuevo-portal-web" },
     { outlet: "El Periódico Mediterráneo", url: "https://www.elperiodicomediterraneo.com/castello-provincia/2026/05/07/candidato-rector-jesus-lancis-reune-129950959.html" },
-    { outlet: "Vive Castellón", url: "https://www.vivecastellon.com/noticiario/informacion-de-los-asuntos-tratados-en-el-claustro-sesion-numero-11-48807.html" },
     { outlet: "Castellón Plaza", url: "https://castellonplaza.com/castellonplaza/educacion2/el-estudiantado-de-medicina-de-la-uji-rechaza-el-convenio-de-practicas-con-la-conselleria-de-sanidad" },
     { outlet: "COPE", url: "https://www.cope.es/emisoras/comunidad-valenciana/castellon-provincia/castellon/ceracope/noticias/diferente-grosor-reduccion-co2-las-soluciones-desde-uji-los-retos-porcelanosa-20231004_2930380" },
     { outlet: "La Plana al Día", url: "https://laplanaaldia.com/castello/noticias/265904/la-uji-blindara-la-representacion-estudiantil-en-un-26-5-en-todos-los-organos-colegiados-gracias-a-una-reforma-estatutaria-impulsada-por-el-consell-de-l-estudiantat" },
@@ -110,9 +117,25 @@ const SHARED = {
       link: "https://nexoraceramica.es",
       image: "photos/nexora-preview.jpg",
     },
-    { name: "embes", tech: "React / Vite", link: "https://embes.es/es" },
-    { name: "JSPV", tech: "React / Vite", link: "https://jspv.mohamedalhowaidi.es" },
-    { name: "La Llorería", tech: "React / Vite", link: "https://lloreria.mohamedalhowaidi.es" },
+    { name: "embes", tech: "React / Vite", link: "https://embes.es/es", image: "photos/embes-preview.jpg" },
+    {
+      name: "JSPV",
+      tech: "React / Vite",
+      link: "https://jspv.mohamedalhowaidi.es",
+      image: "photos/jspv-preview.jpg",
+    },
+    {
+      name: "La Llorería",
+      tech: "React / Vite",
+      link: "https://lloreria.mohamedalhowaidi.es",
+      image: "photos/lalloreria-preview.jpg",
+    },
+    {
+      name: "Equip Rafa",
+      tech: "React / Vite",
+      link: "https://equiprafa.es",
+      image: "photos/equiprafa-preview.jpg",
+    },
   ],
 };
 
@@ -129,14 +152,10 @@ const ES_MEDIA_TITLES = [
   "Nuevo rumbo en el Consell de l'Estudiantat",
   "Castelló modifica las líneas de autobuses con la UJI para adaptarse a los horarios de las clases",
   "Horario especial 24 horas en la Biblioteca de la UJI por exámenes",
-  "Las 200 plazas de la nueva residencia de estudiantes de Castellón prevén abrir en 2025",
-  "La UJI incluye en su plan de Gobierno un nuevo edificio de alojamientos asequibles para el estudiantado",
-  "El precio del alquiler amenaza el acceso a la universidad en Castelló",
   "Castellón ultima las bases de las ayudas al alquiler joven",
   "La perpetua realidad del estudiante universitario y la vivienda",
   "La UJI presenta su plan de becas para 2026 en un nuevo portal web",
   "El candidato a rector Jesús Lancís reúne apoyos",
-  "Asuntos tratados en el Claustro de la UJI, sesión nº 11",
   "El estudiantado de Medicina de la UJI rechaza el convenio de prácticas con la Conselleria de Sanidad",
   "Diferente grosor y reducción de CO2: las soluciones desde la UJI a los retos de Porcelanosa",
   "La UJI blindará la representación estudiantil en un 26,5% en todos los órganos colegiados",
@@ -148,14 +167,10 @@ const EN_MEDIA_TITLES = [
   "A new direction for the Consell de l'Estudiantat",
   "Castelló adjusts the UJI bus lines to match class schedules",
   "Special 24-hour schedule at the UJI Library during exams",
-  "The 200 places at Castellón's new student residence are set to open in 2025",
-  "UJI includes a new building of affordable student housing in its governance plan",
-  "Soaring rents threaten access to university in Castelló",
   "Castellón finalizes the rules for youth rental aid",
   "The enduring reality of university students and housing",
   "UJI unveils its 2026 scholarship plan on a new web portal",
   "Rector candidate Jesús Lancís gathers support",
-  "Matters discussed at the UJI Senate, session no. 11",
   "UJI Medicine students reject the placement agreement with the regional health department",
   "Reduced thickness and lower CO2: UJI's solutions to Porcelanosa's challenges",
   "UJI locks in 26.5% student representation across all collegiate bodies",
@@ -167,14 +182,10 @@ const VA_MEDIA_TITLES = [
   "Nou rumb en el Consell de l'Estudiantat",
   "Castelló modifica les línies d'autobusos amb la UJI per a adaptar-se als horaris de les classes",
   "Horari especial 24 hores en la Biblioteca de la UJI per exàmens",
-  "Les 200 places de la nova residència d'estudiants de Castelló preveuen obrir en 2025",
-  "La UJI inclou en el seu pla de Govern un nou edifici d'allotjaments assequibles per a l'estudiantat",
-  "El preu del lloguer amenaça l'accés a la universitat a Castelló",
   "Castelló ultima les bases de les ajudes al lloguer jove",
   "La perpètua realitat de l'estudiant universitari i l'habitatge",
   "La UJI presenta el seu pla de beques per a 2026 en un nou portal web",
   "El candidat a rector Jesús Lancís reuneix suports",
-  "Assumptes tractats en el Claustre de la UJI, sessió núm. 11",
   "L'estudiantat de Medicina de la UJI rebutja el conveni de pràctiques amb la Conselleria de Sanitat",
   "Diferent gruix i reducció de CO2: les solucions des de la UJI als reptes de Porcelanosa",
   "La UJI blindarà la representació estudiantil en un 26,5% en tots els òrgans col·legiats",
@@ -186,14 +197,10 @@ const AR_MEDIA_TITLES = [
   "اتجاه جديد لمجلس الطلاب (Consell de l'Estudiantat)",
   "كاستيو تعدّل خطوط الحافلات مع جامعة UJI لتتوافق مع جداول المحاضرات",
   "جدول خاص على مدار 24 ساعة في مكتبة جامعة UJI خلال الامتحانات",
-  "200 مكان في سكن الطلاب الجديد في كاستيون من المقرر افتتاحها في 2025",
-  "جامعة UJI تُدرج مبنى جديدًا لسكن طلابي ميسور التكلفة في خطتها الحكومية",
-  "ارتفاع الإيجارات يهدد الوصول إلى الجامعة في كاستيو",
   "كاستيون تُنهي قواعد إعانات الإيجار للشباب",
   "الواقع المستمر لطلاب الجامعة والسكن",
   "جامعة UJI تكشف عن خطة المنح الدراسية لعام 2026 عبر بوابة إلكترونية جديدة",
   "مرشح رئاسة الجامعة خيسوس لانسيس يحشد الدعم",
-  "المواضيع التي نوقشت في مجلس جامعة UJI، الجلسة رقم 11",
   "طلاب الطب في جامعة UJI يرفضون اتفاقية التدريب مع وزارة الصحة الإقليمية",
   "سماكة أقل وانبعاثات CO2 أدنى: حلول جامعة UJI لتحديات بورسيلانوزا",
   "جامعة UJI تضمن تمثيلاً طلابياً بنسبة 26.5% في جميع الهيئات الجماعية",
@@ -370,6 +377,11 @@ export const translations: Record<Lang, Dict> = {
             "Diario emocional íntimo para ti y tu grupo de confianza: registra cómo te sientes, visualiza tus tendencias y pide apoyo cuando la intensidad es alta.",
         },
         {
+          ...SHARED.projectsMeta[10],
+          description:
+            "Web de campaña de Rafa Simó, candidato a la alcaldía de Castelló (2027): presentación del candidato y formulario para unirse al equipo de voluntarios.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "Web del ecosistema digital de CANVI en la Universitat Jaume I.",
         },
@@ -450,9 +462,20 @@ export const translations: Record<Lang, Dict> = {
       title: "HABLEMOS.",
       intro:
         "Abierto a nuevas oportunidades, proyectos colaborativos o cualquier consulta sobre representación estudiantil.",
-      phoneLabel: "T",
       rights: "Todos los derechos reservados.",
       location: "Castellón, España",
+      form: {
+        nameLabel: "Nombre",
+        namePlaceholder: "Tu nombre",
+        emailLabel: "Correo",
+        emailPlaceholder: "tu@email.com",
+        messageLabel: "Mensaje",
+        messagePlaceholder: "Cuéntame en qué puedo ayudarte...",
+        send: "Enviar mensaje",
+        sending: "Enviando...",
+        success: "¡Mensaje enviado! Te responderé lo antes posible.",
+        error: "No se pudo enviar el mensaje. Inténtalo de nuevo o escríbeme directamente.",
+      },
     },
     scroll: "Scroll",
   },
@@ -626,6 +649,11 @@ export const translations: Record<Lang, Dict> = {
             "A private emotional journal for you and your circle: log how you feel, visualise your patterns and ask for support when intensity runs high.",
         },
         {
+          ...SHARED.projectsMeta[10],
+          description:
+            "Campaign website for Rafa Simó, candidate for Mayor of Castelló (2027): candidate presentation and a volunteer sign-up form to join the team.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "Digital ecosystem website for CANVI at Universitat Jaume I.",
         },
@@ -705,9 +733,20 @@ export const translations: Record<Lang, Dict> = {
       title: "LET'S TALK.",
       intro:
         "Open to new opportunities, collaborative projects or any inquiry about student representation.",
-      phoneLabel: "T",
       rights: "All rights reserved.",
       location: "Castellón, Spain",
+      form: {
+        nameLabel: "Name",
+        namePlaceholder: "Your name",
+        emailLabel: "Email",
+        emailPlaceholder: "you@email.com",
+        messageLabel: "Message",
+        messagePlaceholder: "Tell me how I can help...",
+        send: "Send message",
+        sending: "Sending...",
+        success: "Message sent! I'll get back to you as soon as possible.",
+        error: "The message couldn't be sent. Please try again or email me directly.",
+      },
     },
     scroll: "Scroll",
   },
@@ -881,6 +920,11 @@ export const translations: Record<Lang, Dict> = {
             "Diari emocional íntim per a tu i el teu grup de confiança: registra com et sents, visualitza les teues tendències i demana suport quan la intensitat és alta.",
         },
         {
+          ...SHARED.projectsMeta[10],
+          description:
+            "Web de campanya de Rafa Simó, candidat a l'alcaldia de Castelló (2027): presentació del candidat i formulari per a unir-te a l'equip de voluntaris.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "Web de l'ecosistema digital de CANVI en la Universitat Jaume I.",
         },
@@ -961,9 +1005,20 @@ export const translations: Record<Lang, Dict> = {
       title: "PARLEM.",
       intro:
         "Obert a noves oportunitats, projectes col·laboratius o qualsevol consulta sobre representació estudiantil.",
-      phoneLabel: "T",
       rights: "Tots els drets reservats.",
       location: "Castelló, Espanya",
+      form: {
+        nameLabel: "Nom",
+        namePlaceholder: "El teu nom",
+        emailLabel: "Correu",
+        emailPlaceholder: "tu@email.com",
+        messageLabel: "Missatge",
+        messagePlaceholder: "Conta'm en què puc ajudar-te...",
+        send: "Enviar missatge",
+        sending: "Enviant...",
+        success: "Missatge enviat! Et respondré com abans millor.",
+        error: "No s'ha pogut enviar el missatge. Torna-ho a intentar o escriu-me directament.",
+      },
     },
     scroll: "Scroll",
   },
@@ -1137,6 +1192,11 @@ export const translations: Record<Lang, Dict> = {
             "مفكرة عاطفية خاصة لك ولدائرتك المقرّبة: سجّل ما تشعر به، وتابع أنماط مشاعرك، واطلب الدعم عند اشتداد الحالة.",
         },
         {
+          ...SHARED.projectsMeta[10],
+          description:
+            "الموقع الانتخابي لرافا سيمو، المرشح لرئاسة بلدية كاستيّون (2027): تقديم المرشح واستمارة للانضمام إلى فريق المتطوعين.",
+        },
+        {
           ...SHARED.projectsMeta[0],
           description: "موقع المنظومة الرقمية لـ CANVI في جامعة Jaume I.",
         },
@@ -1217,9 +1277,20 @@ export const translations: Record<Lang, Dict> = {
       title: "لنتحدث.",
       intro:
         "منفتح على الفرص الجديدة والمشاريع التعاونية أو أي استفسار حول التمثيل الطلابي.",
-      phoneLabel: "هاتف",
       rights: "جميع الحقوق محفوظة.",
       location: "كاستيون، إسبانيا",
+      form: {
+        nameLabel: "الاسم",
+        namePlaceholder: "اسمك",
+        emailLabel: "البريد الإلكتروني",
+        emailPlaceholder: "you@email.com",
+        messageLabel: "الرسالة",
+        messagePlaceholder: "أخبرني كيف يمكنني مساعدتك...",
+        send: "إرسال الرسالة",
+        sending: "جارٍ الإرسال...",
+        success: "تم إرسال الرسالة! سأرد عليك في أقرب وقت ممكن.",
+        error: "تعذّر إرسال الرسالة. حاول مرة أخرى أو راسلني مباشرة.",
+      },
     },
     scroll: "Scroll",
   },

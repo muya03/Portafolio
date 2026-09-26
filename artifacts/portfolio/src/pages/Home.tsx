@@ -4,8 +4,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { animate } from "animejs";
 import { HeroScene } from "../components/canvas/HeroScene";
 import { Navbar } from "../components/layout/Navbar";
+import { ContactForm } from "../components/ContactForm";
 import { useLanguage } from "../lib/i18n";
-import { FileText, Github, Linkedin, Mail, ExternalLink, ChevronRight, MapPin, Download } from "lucide-react";
+import { FileText, Github, Linkedin, ExternalLink, ChevronRight, MapPin, Download } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -533,20 +534,14 @@ export default function Home() {
             {t.contact.intro}
           </p>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-6 mb-24">
-            <a href="mailto:mohamed.alhowaidi@gmail.com" className="flex items-center gap-3 px-6 py-3 glass-panel hover:bg-white/5 transition-colors w-full md:w-auto justify-center">
-              <Mail className="w-5 h-5 text-primary" />
-              <span>mohamed.alhowaidi@gmail.com</span>
-            </a>
-            <a href="tel:+34648492935" className="flex items-center gap-3 px-6 py-3 glass-panel hover:bg-white/5 transition-colors w-full md:w-auto justify-center">
-              <span className="text-primary font-bold">{t.contact.phoneLabel}</span>
-              <span>648 49 29 35</span>
-            </a>
+          <div className="flex flex-col md:flex-row justify-center items-center gap-6 mb-12">
             <a href="https://www.linkedin.com/in/mohamedalhowaidi/" target="_blank" rel="noreferrer" className="flex items-center gap-3 px-6 py-3 glass-panel hover:bg-white/5 transition-colors w-full md:w-auto justify-center">
               <Linkedin className="w-5 h-5 text-primary" />
               <span>LinkedIn</span>
             </a>
           </div>
+
+          <ContactForm />
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
             <p>© {new Date().getFullYear()} Mohamed Al Howaidi. {t.contact.rights}</p>
